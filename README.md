@@ -7,6 +7,8 @@ A React-based web application for browsing and filtering Pokemon data.
 - 🔍 **Search by Name** - Find Pokemon by typing their name
 - 🏷️ **Filter by Type** - Filter Pokemon by their elemental type
 - ⭐ **Legendary Filter** - Show only legendary or non-legendary Pokemon
+- 🔃 **Sorting** - Sort by Pokédex number or by name (A–Z / Z–A)
+- ★ **Favorites** - Star Pokemon, see how many you have and show only favorites; kept across reloads
 - 📱 **Responsive Design** - Works on desktop, tablet, and mobile
 - 🎨 **Modern UI** - Beautiful glassmorphism design with animations
 - ⚡ **Real-time Filtering** - Instant results as you type or change filters

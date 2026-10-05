@@ -7,6 +7,8 @@ RUN npm install
 
 # Build
 COPY . .
+# Call the backend through this server's /api (see nginx.conf), not localhost:3001
+ENV REACT_APP_API_URL=
 RUN npm run build
 
 # --- runtime stage ---
