@@ -75,3 +75,10 @@
     margin-top: 0.5rem;
   }
 }
+.favorites-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.8rem;
+  cursor: pointer;
+}

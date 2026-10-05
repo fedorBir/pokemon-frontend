@@ -3,20 +3,27 @@ import './App.css';
 import PokemonCard from './components/PokemonCard';
 import FilterBar from './components/FilterBar';
 import LoadingSpinner from './components/LoadingSpinner';
+import { DEFAULT_SORT, sortPokemons } from './sorting';
+import { useFavorites } from './favorites';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+
+const EMPTY_FILTERS = {
+  name: '',
+  type: '',
+  legendary: '',
+  favoritesOnly: false,
+  sort: DEFAULT_SORT
+};
 
 function App() {
   const [pokemons, setPokemons] = useState([]);
   const [filteredPokemons, setFilteredPokemons] = useState([]);
   const [types, setTypes] = useState([]);
-  const [filters, setFilters] = useState({
-    name: '',
-    type: '',
-    legendary: ''
-  });
+  const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { favoriteIds, toggleFavorite } = useFavorites();
 
   // Fetch all Pokemon and types on component mount
   useEffect(() => {
@@ -76,22 +83,23 @@ function App() {
         filtered = filtered.filter(pokemon => pokemon.legendary === isLegendary);
       }
 
-      setFilteredPokemons(filtered);
+      // Show only favorites
+      if (filters.favoritesOnly) {
+        filtered = filtered.filter(pokemon => favoriteIds.includes(pokemon.id));
+      }
+
+      setFilteredPokemons(sortPokemons(filtered, filters.sort));
     };
 
     applyFilters();
-  }, [filters, pokemons]);
+  }, [filters, pokemons, favoriteIds]);
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
   };
 
   const clearFilters = () => {
-    setFilters({
-      name: '',
-      type: '',
-      legendary: ''
-    });
+    setFilters(EMPTY_FILTERS);
   };
 
   if (loading) {
@@ -131,6 +139,9 @@ function App() {
         <p>Discover and filter your favorite Pokemon!</p>
         <div className="header-actions">
           <button className="jira-link-button">Link Jira Issue</button>
+          <span className="favorites-count">
+            ★ {favoriteIds.length} {favoriteIds.length === 1 ? 'favorite' : 'favorites'}
+          </span>
         </div>
       </header>
 
@@ -148,7 +159,15 @@ function App() {
           </p>
         </div>
 
-        {filteredPokemons.length === 0 ? (
+        {filteredPokemons.length === 0 && filters.favoritesOnly && favoriteIds.length === 0 ? (
+          <div className="no-results">
+            <h3>No favorites yet</h3>
+            <p>Click the ☆ on a Pokemon card to add it to your favorites.</p>
+            <button onClick={clearFilters} className="clear-button">
+              Show All Pokemon
+            </button>
+          </div>
+        ) : filteredPokemons.length === 0 ? (
           <div className="no-results">
             <h3>No Pokemon found</h3>
             <p>Try adjusting your filters to see more results.</p>
@@ -159,7 +178,12 @@ function App() {
         ) : (
           <div className="pokemon-grid">
             {filteredPokemons.map(pokemon => (
-              <PokemonCard key={pokemon.id} pokemon={pokemon} />
+              <PokemonCard
+                key={pokemon.id}
+                pokemon={pokemon}
+                isFavorite={favoriteIds.includes(pokemon.id)}
+                onToggleFavorite={() => toggleFavorite(pokemon.id)}
+              />
             ))}
           </div>
         )}
