@@ -107,3 +107,25 @@
   letter-spacing: 0.5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+/* Favorites */
+.favorite-button {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  z-index: 1;
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: #f5b400;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.favorite-button:hover {
+  transform: scale(1.2);
+}
+
+.pokemon-card.favorite {
+  box-shadow: 0 0 0 3px rgba(245, 180, 0, 0.6), 0 8px 32px rgba(0, 0, 0, 0.1);
+}
