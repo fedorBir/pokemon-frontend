@@ -3,20 +3,26 @@ import './App.css';
 import PokemonCard from './components/PokemonCard';
 import FilterBar from './components/FilterBar';
 import LoadingSpinner from './components/LoadingSpinner';
+import { DEFAULT_SORT, sortPokemons } from './sorting';
+import { useFavorites } from './favorites';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+
+const EMPTY_FILTERS = {
+  name: '',
+  type: '',
+  legendary: '',
+  sort: DEFAULT_SORT
+};
 
 function App() {
   const [pokemons, setPokemons] = useState([]);
   const [filteredPokemons, setFilteredPokemons] = useState([]);
   const [types, setTypes] = useState([]);
-  const [filters, setFilters] = useState({
-    name: '',
-    type: '',
-    legendary: ''
-  });
+  const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { favoriteIds, toggleFavorite } = useFavorites();
 
   // Fetch all Pokemon and types on component mount
   useEffect(() => {
@@ -76,7 +82,7 @@ function App() {
         filtered = filtered.filter(pokemon => pokemon.legendary === isLegendary);
       }
 
-      setFilteredPokemons(filtered);
+      setFilteredPokemons(sortPokemons(filtered, filters.sort));
     };
 
     applyFilters();
@@ -87,11 +93,7 @@ function App() {
   };
 
   const clearFilters = () => {
-    setFilters({
-      name: '',
-      type: '',
-      legendary: ''
-    });
+    setFilters(EMPTY_FILTERS);
   };
 
   if (loading) {
@@ -159,7 +161,12 @@ function App() {
         ) : (
           <div className="pokemon-grid">
             {filteredPokemons.map(pokemon => (
-              <PokemonCard key={pokemon.id} pokemon={pokemon} />
+              <PokemonCard
+                key={pokemon.id}
+                pokemon={pokemon}
+                isFavorite={favoriteIds.includes(pokemon.id)}
+                onToggleFavorite={() => toggleFavorite(pokemon.id)}
+              />
             ))}
           </div>
         )}
