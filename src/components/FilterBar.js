@@ -1,5 +1,6 @@
 import React from 'react';
 import './FilterBar.css';
+import { DEFAULT_SORT } from '../sorting';
 
 const FilterBar = ({ filters, types, onFilterChange, onClearFilters }) => {
   const handleInputChange = (field, value) => {
@@ -9,7 +10,8 @@ const FilterBar = ({ filters, types, onFilterChange, onClearFilters }) => {
     });
   };
 
-  const hasActiveFilters = filters.name || filters.type || filters.legendary;
+  const hasActiveFilters =
+    filters.name || filters.type || filters.legendary || filters.sort !== DEFAULT_SORT;
 
   return (
     <div className="filter-bar">
@@ -59,6 +61,22 @@ const FilterBar = ({ filters, types, onFilterChange, onClearFilters }) => {
           <option value="">All Pokemon</option>
           <option value="true">Legendary Only</option>
           <option value="false">Non-Legendary Only</option>
+        </select>
+      </div>
+
+      <div className="filter-section">
+        <label htmlFor="sort-order" className="filter-label">
+          Sort by:
+        </label>
+        <select
+          id="sort-order"
+          value={filters.sort}
+          onChange={(e) => handleInputChange('sort', e.target.value)}
+          className="filter-select"
+        >
+          <option value="id">Pokédex Number</option>
+          <option value="name-asc">Name (A–Z)</option>
+          <option value="name-desc">Name (Z–A)</option>
         </select>
       </div>
 
