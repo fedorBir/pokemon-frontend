@@ -1,9 +1,23 @@
 import React from 'react';
 import './PokemonCard.css';
 
-const PokemonCard = ({ pokemon }) => {
+const PokemonCard = ({ pokemon, isFavorite, onToggleFavorite }) => {
+  const favoriteLabel = isFavorite
+    ? `Remove ${pokemon.name} from favorites`
+    : `Add ${pokemon.name} to favorites`;
+
   return (
-    <div className={`pokemon-card ${pokemon.legendary ? 'legendary' : ''}`}>
+    <div className={`pokemon-card ${pokemon.legendary ? 'legendary' : ''} ${isFavorite ? 'favorite' : ''}`}>
+      <button
+        type="button"
+        className="favorite-button"
+        onClick={onToggleFavorite}
+        aria-label={favoriteLabel}
+        aria-pressed={isFavorite}
+        title={favoriteLabel}
+      >
+        {isFavorite ? '★' : '☆'}
+      </button>
       <div className="pokemon-image-container">
         <img 
           src={pokemon.image} 
